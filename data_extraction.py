@@ -13,20 +13,29 @@ def get_coordinates_from_pdb(file_path):
     file_path -- a path to a .pdb file
 
     Outputs:
-    frames -- a numpy 3D array, containing n frames, with each frame containing a 2D array with each atom's cartesian coordinates 
+    frames -- a numpy 3D array, containing n frames, with each frame containing
+    a 2D array with residue number and each atom's cartesian coordinates 
     """
     with open(file_path) as fp:
         data = fp.readlines()
     frames = [[]]
+    resnums = []
+    molsizes = []
     for line in data:
         try:
             if 'ENDMDL' in line:
                 frames.append([])
             elif 'ATOM' in line:
                 frames[-1].append([float(line[30:38]),float(line[38:46]),float(line[46:54])])
+                if len(frames) == 1:
+                    resnums.append(int(line[20:27]))
+            elif 'TER' in line:
+                if len(frames) == 1:
+                    molsizes.append(len(frames[-1]))
+
         except IndexError:
             print(line)
-    return np.array(frames[:-1])
+    return np.array(frames[:-1]), resnums, molsizes
 
 def get_charges_from_top(file_path):
     """
@@ -79,3 +88,4 @@ def get_charges_from_top(file_path):
 
     big_charge_array = np.array(big_charge_list)
     return big_charge_array
+
