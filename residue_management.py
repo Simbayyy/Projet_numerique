@@ -86,7 +86,7 @@ def check_file_correctness(positions, resnums, molsizes, charges):
     if len(positions[0]) != len(charges):
         raise ValueError("There are more atoms in one file than the other")
 
-def main(path_top=,path_pdb):
+def main(path_top,path_pdb):
     """Run all of the code, placeholder function."""
     try:
         print('Loading atom positions')
