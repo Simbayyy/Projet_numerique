@@ -86,14 +86,14 @@ def check_file_correctness(positions, resnums, molsizes, charges):
     if len(positions[0]) != len(charges):
         raise ValueError("There are more atoms in one file than the other")
 
-def main(path_top,path_pdb):
+def main(path_top='data/1kx5-b_sol_1prot.top' ,path_pdb='data/center_1kx5-b_1prot.pdb'):
     """Run all of the code, placeholder function."""
     try:
         print('Loading atom positions')
-        positions, resnums, molsizes = extract.get_coordinates_from_pdb('data/center_1kx5-b_1prot.pdb')
+        positions, resnums, molsizes = extract.get_coordinates_from_pdb(path_pdb)
         print("Positions loaded")
         print("Loading charges")
-        charges = extract.get_charges_from_top('data/1kx5-b_sol_1prot.top')
+        charges = extract.get_charges_from_top(path_top)
         print("Charges loaded")
     except FileNotFoundError:
         raise FileNotFoundError("Error in the file path(s) given")
@@ -106,5 +106,5 @@ def main(path_top,path_pdb):
         frame_num += 1
     return np.array(full_edges)
 
-a = main("","")
+a = main()
 print(a)
