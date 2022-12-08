@@ -1,3 +1,7 @@
+#!/usr/bin/env python 
+# -*- coding: utf-8 -*-
+"""Module dealing with extracting data from .pdb and .top file in suitable format for further computing."""
+
 import numpy as np
 import os, pathlib, re
 import pandas
@@ -7,7 +11,7 @@ os.chdir(pathlib.Path(__file__).parent.resolve())
 
 def get_coordinates_from_pdb(file_path):
     """
-    Takes in the path for a pdb file and returns a 3D numpy array
+    Take in the path for a pdb file and returns a 3D numpy array.
 
     Keyword arguments:
     file_path -- a path to a .pdb file
@@ -39,7 +43,7 @@ def get_coordinates_from_pdb(file_path):
 
 def get_charges_from_top(file_path):
     """
-    Takes in the path for a topology file and returns a 2D numpy array
+    Take in the path for a topology file and returns a 2D numpy array.
 
     Keyword arguments:
     file_path -- a path to a .pdb file
