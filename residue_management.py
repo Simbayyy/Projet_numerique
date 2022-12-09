@@ -7,6 +7,7 @@ import force_computation as force
 import numpy as np
 import os, pathlib, re
 import pandas
+from numba import jit
 
 os.chdir(pathlib.Path(__file__).parent.resolve())
 
@@ -29,6 +30,7 @@ def same_system(atom_index_1, atom_index_2, molsizes):
             return False
     return True
 
+@jit(nopython = True)
 def filter_residue_atoms(residue, positions, charges, resnums):
     """
     Generate a subset of position and charge arrays with only a given residue.
@@ -100,7 +102,7 @@ def main(path_top='data/1kx5-b_sol_1prot.top' ,path_pdb='data/center_1kx5-b_1pro
     check_file_correctness(positions,resnums,molsizes,charges)
     full_edges = []
     frame_num = 1
-    for frame in positions[:15]:
+    for frame in positions[200:300]:
         full_edges.append(generate_edge_matrix(frame,charges,resnums,molsizes))
         print(f"frame {frame_num} computed")
         frame_num += 1
