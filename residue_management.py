@@ -63,7 +63,7 @@ def generate_edge_matrix(frame, charges, resnums, molsizes):
     edge_matrix -- a numpy 2D array with shape(residue amount, residue amount) containing electrostatic interaction values between pairs of residues 
     """
     unique_residues = list(dict.fromkeys(resnums))
-    edge_matrix = np.zeros((len(unique_residues),len(unique_residues),3))
+    edge_matrix = np.zeros((len(unique_residues),len(unique_residues)))
     resnums_array = np.array(resnums)
     for i in range(len(unique_residues)):
         for j in range(i+1,len(unique_residues)):
@@ -71,7 +71,7 @@ def generate_edge_matrix(frame, charges, resnums, molsizes):
                 #print(f"{i}, {j}, {np.count_nonzero(resnums_array[resnums_array == unique_residues[i]]) }")
                 res_pos_1, res_charges_1 = filter_residue_atoms(unique_residues[i],frame,charges,resnums_array)
                 res_pos_2, res_charges_2 = filter_residue_atoms(unique_residues[j],frame,charges,resnums_array) 
-                edge_matrix[i][j] = force.compute_residue_force(res_pos_1,res_pos_2, res_charges_1, res_charges_2)
+                edge_matrix[i][j] = force.compute_residue_energy(res_pos_1,res_pos_2, res_charges_1, res_charges_2)
                 edge_matrix[j][i] = edge_matrix[i][j]
     return edge_matrix
 
