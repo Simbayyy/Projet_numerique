@@ -58,6 +58,7 @@ def get_charges_from_top(file_path):
 
     lastindex = 0
     charges = [[]]
+    atomnames = [[]]
     molecule_amounts = []
 
     for line in data:
@@ -75,8 +76,10 @@ def get_charges_from_top(file_path):
                     if lastindexmatch := re.match(r' *(\d+) +',line):
                         if int(lastindexmatch.group(1)) <= lastindex:
                             charges.append([])
+                            atomnames.append([])
                         lastindex = int(lastindexmatch.group(1))
                     charges[-1].append(float(chargematch.group(1)))
+                    atomnames[-1].append(line[31:38])
 
         if molecules:
             if name_amount := re.match(r'^([^;][\w\d\+]*) +(\d+)',line):
@@ -86,10 +89,12 @@ def get_charges_from_top(file_path):
         raise IndexError('More molecules defined than atom groups in the file')
 
     big_charge_list = []
+    big_atom_list = []
     for molecule_num in range(len(molecule_amounts)):
         for _ in range(molecule_amounts[molecule_num][1]):
             big_charge_list.extend(charges[molecule_num])
+            big_atom_list.extend(atomnames[molecule_num])
 
     big_charge_array = np.array(big_charge_list)
-    return big_charge_array
+    return big_charge_array, big_atom_list
 
