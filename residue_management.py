@@ -112,7 +112,7 @@ def split_guanines_in_three_numbers(resnums,atoms):
 
 def generate_edge_matrix(frame, charges, resnums, molsizes):
     """
-    Compute coulombic force between pairs of residues of different systems, for a frame.
+    Compute coulombic energy between pairs of residues of different systems, for a frame.
     
     Keyword arguments:
     frame -- a numpy 2D array w(th cartesian coordinates for each atom
@@ -135,6 +135,33 @@ def generate_edge_matrix(frame, charges, resnums, molsizes):
                 edge_matrix[i][j] = force.compute_residue_energy(res_pos_1,res_pos_2, res_charges_1, res_charges_2)
                 edge_matrix[j][i] = edge_matrix[i][j]
     return edge_matrix
+
+def generate_edge_matrix_force(frame, charges, resnums, molsizes):
+    """
+    Compute coulombic force between pairs of residues of different systems, for a frame.
+    
+    Keyword arguments:
+    frame -- a numpy 2D array w(th cartesian coordinates for each atom
+    charges -- a numpy 1D array with charge for each atom
+    resnums -- a numpy 1D array with the list of residue number for each atom (with length equal to atom count)
+    molsizes -- list of last atom numbers in each system of the PDB file
+
+    Outputs:
+    edge_matrix -- a numpy 3D array with shape(residue amount, residue amount, 3) containing coulombig interaction values between pairs of residues 
+    """
+    unique_residues = list(dict.fromkeys(resnums))
+    edge_matrix = np.zeros((len(unique_residues),len(unique_residues)))
+    resnums_array = np.array(resnums)
+    for i in range(len(unique_residues)):
+        for j in range(i+1,len(unique_residues)):
+            if not same_system(resnums.index(unique_residues[i]),resnums.index(unique_residues[j]),molsizes):
+                #print(f"{i}, {j}, {np.count_nonzero(resnums_array[resnums_array == unique_residues[i]]) }")
+                res_pos_1, res_charges_1 = filter_residue_atoms(unique_residues[i],frame,charges,resnums_array)
+                res_pos_2, res_charges_2 = filter_residue_atoms(unique_residues[j],frame,charges,resnums_array) 
+                edge_matrix[i][j] = force.compute_residue_force(res_pos_1,res_pos_2, res_charges_1, res_charges_2)
+                edge_matrix[j][i] = edge_matrix[i][j]
+    return edge_matrix
+
 
 def check_file_correctness(positions, resnums, molsizes, charges):
     """Check the variables produced by file reading, and raises explicit expressions based on selected issues."""
@@ -174,5 +201,3 @@ def main(path_top='data/1kx5-b_sol_1prot.top' ,path_pdb='data/center_1kx5-b_1pro
     else:
         return np.array(full_edges)
 
-a = main()
-print(a)
